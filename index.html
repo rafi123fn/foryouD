@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untukmu</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Poppins',sans-serif;
+overflow:hidden;
+background:#000;
+color:#fff;
+}
+
+/* ===== GLITCH ===== */
+#glitch{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:999;
+flex-direction:column;
+}
+
+#glitchText{
+opacity:0.6;
+animation:flicker 0.2s infinite;
+}
+
+@keyframes flicker{
+0%{opacity:0.2;}
+50%{opacity:1;}
+100%{opacity:0.3;}
+}
+
+/* ===== MAIN ===== */
+#main{
+opacity:0;
+transition:2s;
+}
+
+/* STAR */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:0;
+}
+
+/* SCENE */
+#scene{
+position:fixed;
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:2;
+transition:2s;
+}
+
+.envelope{
+width:230px;
+height:150px;
+background:#fff;
+border-radius:8px;
+position:relative;
+transform:scale(0);
+animation:zoomIn 1.8s ease forwards;
+}
+
+.envelope::before{
+content:'';
+position:absolute;
+top:0;
+left:0;
+border-left:115px solid transparent;
+border-right:115px solid transparent;
+border-top:75px solid #ddd;
+transform-origin:top;
+transition:1s;
+}
+
+.envelope.open::before{
+transform:rotateX(180deg);
+}
+
+#openBtn{
+margin-top:25px;
+opacity:0;
+padding:10px 25px;
+border-radius:30px;
+background:rgba(255,255,255,0.1);
+transition:2s;
+cursor:pointer;
+}
+.showBtn{opacity:1 !important;}
+
+/* LETTER */
+#letter{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,150%);
+width:90%;
+max-width:700px;
+height:75%;
+background:#fff;
+color:#000;
+padding:25px;
+border-radius:12px;
+opacity:0;
+transition:2s;
+overflow-y:auto;
+z-index:3;
+}
+
+#letter.show{
+transform:translate(-50%,-50%);
+opacity:1;
+}
+
+p{margin-bottom:20px;line-height:1.9;min-height:30px;}
+h1{text-align:center;margin-bottom:20px;}
+
+#img{text-align:center;opacity:0;transition:2s;}
+#img.show{opacity:1;}
+
+#closing{
+position:fixed;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+z-index:10;
+transition:2s;
+}
+
+#closingText{
+opacity:0;
+transition:2s;
+letter-spacing:3px;
+}
+
+@keyframes zoomIn{
+0%{transform:scale(0);}
+100%{transform:scale(1);}
+}
+</style>
+</head>
+
+<body>
+
+<div id="glitch">
+<div id="glitchText">NO SIGNAL</div>
+</div>
+
+<div id="main">
+
+<canvas id="stars"></canvas>
+
+<div id="scene">
+<div class="envelope" id="env"></div>
+<div id="openBtn">OPEN</div>
+</div>
+
+<div id="letter">
+<h1>UNTUKMU</h1>
+
+<p id="p1"></p>
+<p id="p2"></p>
+<p id="p3"></p>
+<p id="p4"></p>
+<p id="p5"></p>
+<p id="p6"></p>
+<p id="p7"></p>
+
+<div id="img">
+<img src="hand.png">
+</div>
+</div>
+
+<div id="closing">
+<div id="closingText">from RFN</div>
+</div>
+
+</div>
+
+<audio id="music" loop>
+<source src="nina.mp3">
+</audio>
+
+<audio id="type">
+<source src="https://www.soundjay.com/keyboard/keyboard-1.mp3">
+</audio>
+
+<script>
+
+/* GLITCH */
+setTimeout(()=>{glitchText.innerText="LOADING...";},1200);
+setTimeout(()=>{
+glitch.style.opacity="0";
+main.style.opacity="1";
+},2500);
+
+/* STAR */
+const c=document.getElementById("stars");
+const ctx=c.getContext("2d");
+c.width=innerWidth;
+c.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<150;i++){
+stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5});
+}
+
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+});
+}
+setInterval(draw,30);
+
+/* OPEN */
+setTimeout(()=>openBtn.classList.add("showBtn"),2000);
+
+openBtn.onclick=()=>{
+env.classList.add("open");
+
+setTimeout(()=>scene.style.opacity="0",800);
+
+setTimeout(()=>{
+scene.style.display="none";
+letter.classList.add("show");
+music.play();
+start();
+},2000);
+};
+
+/* TEXT FULL (7 PARAGRAF — TIDAK DIPOTONG) */
+const text=[
+"Halo Deandra, semoga Allah selalu memberikan kamu kesehatan dan kekuatan dalam setiap langkah yang kamu jalani. Aku tahu… tidak semua perjalanan hidup terasa mudah, ada saat dimana semuanya terasa berat, dan kamu merasa seperti tertinggal.",
+"Kamu pernah berada di titik terbaikmu, lalu semuanya berubah. Tempat baru tidak selalu membawa kebahagiaan, justru meninggalkan luka yang diam-diam menetap di dalam dirimu.",
+"Aku tahu… masa sekolah dasar itu bukan kenangan yang ingin kamu ingat. Ada hal-hal yang membuatmu merasa kecil, merasa tidak cukup, bahkan untuk menjadi dirimu sendiri.",
+"Seperti saat kamu merajut… sesuatu yang kamu buat dengan sabar dan perasaan, tapi justru ditertawakan. Padahal mereka tidak tahu seberapa besar usaha yang kamu taruh di dalamnya.",
+"Dan jujur saja… aku cuma ingin bilang: ihh, bagussss ituuu… mereka yang ngetawain belum tentu bisa bikin. Apa yang kamu buat itu punya nilai, punya cerita, dan itu jauh lebih berarti dari sekadar omongan mereka.",
+"Kamu tidak pernah kehilangan dirimu. Kamu hanya sedang melewati fase yang tidak mudah. Semua rasa itu valid, semua luka itu nyata… tapi itu bukan akhir dari perjalananmu.",
+"Jadi jangan menyerah ya… tetaplah berjalan, walaupun pelan. Karena suatu hari nanti, kamu akan melihat ke belakang… dan menyadari, kamu sudah sejauh ini… dan kamu berhasil melewati semuanya."
+];
+
+const el=[p1,p2,p3,p4,p5,p6,p7];
+let speed=38;
+
+function typeText(t,e,cb){
+let i=0;
+function ngetik(){
+if(i<t.length){
+e.innerHTML+=t[i];
+type.currentTime=0;
+type.play();
+i++;
+setTimeout(ngetik,speed);
+}else{
+if(cb)setTimeout(cb,1000);
+}
+}
+ngetik();
+}
+
+function start(){
+typeText(text[0],el[0],()=>{
+typeText(text[1],el[1],()=>{
+typeText(text[2],el[2],()=>{
+typeText(text[3],el[3],()=>{
+typeText(text[4],el[4],()=>{
+typeText(text[5],el[5],()=>{
+typeText(text[6],el[6],()=>{
+
+img.classList.add("show");
+
+/* CLOSING DELAY */
+setTimeout(()=>{
+closing.style.opacity="1";
+setTimeout(()=>{
+closingText.style.opacity="1";
+},500);
+},2500);
+
+});
+});
+});
+});
+});
+});
+});
+}
+
+</script>
+
+</body>
+</html>
